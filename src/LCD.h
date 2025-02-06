@@ -1,6 +1,5 @@
-
 /* Arduino TextLCD Library, for a 4-bit LCD based on HD44780
- * Copyright (c) 2020, sstaub
+ * Copyright (c) 2025, sstaub
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +27,6 @@
 #define LCD_H
 
 #include "Arduino.h"
-#include "util/delay.h"
 #include "Print.h"
 
 // commands
@@ -69,6 +67,8 @@
 #define LCD_5x10DOTS 0x04
 #define LCD_5x8DOTS 0x00
 
+#define OFFSET 1
+
 typedef enum {
 	DISPLAY_ON,
 	DISPLAY_OFF,
@@ -82,7 +82,7 @@ typedef enum {
 	RIGHT_TO_LEFT,
 	AUTOSCROLL_ON,
 	AUTOSCROLL_OFF,
-	} mode_t;
+	} dispmode_t;
 
 class LCD : public Print {
 	public:
@@ -101,17 +101,33 @@ class LCD : public Print {
 		/**
 		 * @brief start using the lcd display
 		 * 
-		 * @param cols default 16
-		 * @param lines default 2
+		 * @param rows default 2
+		 * @param columns default 6
 		 * @param dotsize default LCD_5x8DOTS some displays have also LCD_5x10DOTS
 		 */
-		void begin(uint8_t columns = 16, uint8_t rows = 2, uint8_t dotsize = LCD_5x8DOTS);
+		void begin(uint8_t rows = 2, uint8_t columns = 16, uint8_t dotsize = LCD_5x8DOTS);
 
 		/**
 		 * @brief clear display, set cursor position to zero
 		 * 
 		 */
 		void cls();
+
+/**
+		 * @brief clear row, set cursor position of the row to the first position
+		 * 
+		 * @param row number of the row
+		 */
+		void clr(uint8_t row);
+
+		/**
+		 * @brief clear part, set cursor position of the row to first column
+		 * 
+		 * @param row number of the row
+		 * @param column number of the column
+		 * @param numbers of chars to delete
+		 */
+		void clp(uint8_t row, uint8_t column, uint8_t numbers);
 
 		/**
 		 * @brief set display modes
@@ -130,7 +146,7 @@ class LCD : public Print {
 		 * - AUTOSCROLL_ON This will 'right justify' text from the cursor
 		 * - AUTOSCROLL_OFF This will 'left justify' text from the cursor
 		 */
-		void display(mode_t mode);
+		void display(dispmode_t mode);
 
 		/**
 		 * @brief set the cursor to a given position
@@ -138,7 +154,7 @@ class LCD : public Print {
 		 * @param col 
 		 * @param line 
 		 */
-		void locate(uint8_t column, uint8_t row);
+		void locate(uint8_t row, uint8_t column);
 
 		/**
 		 * @brief set cursor position to home position 0/0
@@ -161,7 +177,7 @@ class LCD : public Print {
 		 * @param row 
 		 * @param c 
 		 */
-		void character(uint8_t column, uint8_t row, char c);
+		void character(uint8_t row, uint8_t column, char c);
 
 		/**
 		 * @brief prints a formated string
@@ -191,7 +207,6 @@ class LCD : public Print {
 		uint8_t columns;
 		uint8_t rows;
 		uint8_t rowOffsets[4];
-		uint8_t dotsize;
 	};
 
 #endif

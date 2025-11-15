@@ -63,7 +63,7 @@ void LCD::clr(uint8_t row) {
 		locate(row, pos);
 		write(' ');
 		}
-	locate(row, 0);
+	locate(row, 1);
 	}
 
 void LCD::clp(uint8_t row, uint8_t column, uint8_t numbers) {
